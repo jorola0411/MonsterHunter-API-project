@@ -1,82 +1,74 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"; 
 import { Link } from "react-router-dom";
 
 function Home() {
+    const [ data, setData ] = useState([]) // this line of codes holds the fetched data of monsters, items, etc.
+    
+    const [ category, setCategory] = useState('monsters'); // This is the default category when the user loads the page.
 
-    const [ monsters, setMonsters] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
 
-    const [searchTerm, setSearchTerm] = useState("")
 
-    const [favs, setFavs] = useState( () => {
 
-        const savedFavs = localStorage.getItem("favs");
+    const searchData = () => {
 
-        return savedFavs ? JSON.parse(savedFavs) : [];
-    })
-
-    const searchMonsters = () => {
-
-        fetch("https://mhw-db.com/monsters")
-        .then( response => response.json())
-        .then( monsterArray => {
-
-            const filteredMonsters = monstersArray/filter( (loopMonster) => {
-                
-                return loopMonster.title.toLowerCase().includes
-                (searchTerm.toLowerCase());
-            });
-
-            setMonsters(filteredMonsters)
-        })
+    const filteredData = data.filter((item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+        setData(filteredData);
     }
+    
 
-    const toggleFav = (monsterID) => {
 
-        let filteredFavs;
-
-        if(favs.includes(monsterID)) {
-
-            filteredFavs = favs.filter(favId => favId !== monsterID );
-        } else {
-
-            filteredFavs = [...favs, monsterID];
-        }
-        localStorage.setItem("favs", JSON.stringify(filteredFavs));
-        setFavs(filteredFavs)
-    }
 
     useEffect( () => {
 
-        fetch("https://mhw-db.com/monsters")
+        fetch(`https://mhw-db.com/${category}`)
         .then( (response) =>{
             return response.json();
         })
         .then( (dataObj) => {
-            setMonsters(dataObj);
+            setData(dataObj);
         })
         .catch( (error) => {
-            console.log('Error fetching monsters!')
+            console.log('Error fetching ${category}!')
         })
-    }, [] );
+    }, [category] ); //when the category changes, this line of code refetchs the data.
 
     return(
         <>
         <h1> Welcome to the Monster Hunter World database!</h1>
-        <input type="text"
-        placeholder="Search for a monster!"
-        value={searchTerm}
-        onChange={(event) => {setSearchTerm( event.target.value)}}
-         />
-         <button onClick={searchMonsters}>Search</button>
-         <ul>
-            {monsters.map( (monster) => {
-                return(
-                <li key={monster.id}> 
-                    <Link to={`/monster/${monster.id}`}>{monster.name}</Link>
+        <div>
+        <label htmlFor="category">Select Category:</label>
+        <select
+          id="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option value="monsters">Monsters</option>
+          <option value="skills">Skills</option>
+          <option value="items">Items</option>
+          <option value="charms">Charms</option>
+          <option value="weapons">Weapons</option>
+          <option value="armor">Armor</option>
+          <option value="locations">Location</option>
+       
+        </select>
+        </div>
 
-                    <button onClick={ ()=> { toggleFav(monster.id)}}>
-                        { favs.includes(monster.id) ? "Remove Fav" : "Add Fav"}
-                    </button>
+        <input type="text"
+        placeholder={`Search for ${category}`}
+        value={searchTerm}
+        onChange={(event) => {setSearchTerm(event.target.value)}}
+         />
+         <button onClick={searchData}>Search</button>
+
+         <ul>
+            {data.map((item) => {
+                return(
+                <li key={item.id}> 
+                    <Link to={`/${category}/${item.id}`}>{item.name}</Link>
+
                 </li>
                 )
             })}
