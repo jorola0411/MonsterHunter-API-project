@@ -3,38 +3,32 @@ import { Link } from "react-router-dom";
 
 function Home() {
     const [ data, setData ] = useState([]) // this line of codes holds the fetched data of monsters, items, etc.
-    
     const [ category, setCategory] = useState('monsters'); // This is the default category when the user loads the page.
-
     const [searchTerm, setSearchTerm] = useState("");
 
 
 
-    const searchData = () => {
-
-    const filteredData = data.filter((item) =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-        setData(filteredData);
-    }
+    useEffect(() => {
+        // This function fetches the API as well as filter the data for the sear
+        const fetchAndFilterData = async () => {
+          try {
+            const response = await fetch(`https://mhw-db.com/${category}`);
+            const allData = await response.json();
     
-
-
-
-    useEffect( () => {
-
-        fetch(`https://mhw-db.com/${category}`)
-        .then( (response) =>{
-            return response.json();
-        })
-        .then( (dataObj) => {
-            setData(dataObj);
-        })
-        .catch( (error) => {
-            console.log('Error fetching ${category}!')
-        })
-    }, [category] ); //when the category changes, this line of code refetchs the data.
-
+            // This line of code filters the search by ideas
+            const filteredData = allData.filter((item) =>
+              item.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+    
+            setData(filteredData);
+          } catch (error) {
+            console.error(`Error fetching ${category}:`, error);
+          }
+        };
+    
+        fetchAndFilterData();
+      }, [category, searchTerm]); // The line of code reruns if the category or search changes.
+    
     return(
         <>
         <h1> Welcome to the Monster Hunter World database!</h1>
@@ -61,19 +55,20 @@ function Home() {
         value={searchTerm}
         onChange={(event) => {setSearchTerm(event.target.value)}}
          />
-         <button onClick={searchData}>Search</button>
-
-         <ul>
-            {data.map((item) => {
-                return(
-                <li key={item.id}> 
-                    <Link to={`/${category}/${item.id}`}>{item.name}</Link>
-
-                </li>
-                )
-            })}
-        </ul>
-        <Link to="/favourites">View Favourites</Link>
+         
+         <Link to="/favourites">View Favourites</Link>
+         <div className="card-container">
+        {data.map((item) => (
+          <div className="card" key={item.id}>
+            <h3>{item.name}</h3>
+           
+            <p>
+              <Link to={`/${category}/${item.id}`}>View Details</Link>
+            </p>
+          </div>
+        ))}
+      </div>
+       
         </>
     )
 }

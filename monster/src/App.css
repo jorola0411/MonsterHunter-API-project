@@ -33,8 +33,47 @@
   }
 }
 
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(1fr); 
+  gap: 16px; 
+  margin-top: 20px;
+}
+
 .card {
-  padding: 2em;
+  background-color: #f9f9f9; 
+  border: 1px solid #ddd; 
+  border-radius: 8px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  padding: 16px;
+  text-align: center; 
+  transition: transform 0.2s ease, box-shadow 0.2s ease; 
+}
+
+.card:hover {
+  transform: scale(1.05); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+}
+
+.card h3 {
+  margin: 0 0 8px; 
+  font-size: 1.25em;
+  color: #333;
+}
+
+.card p {
+  margin: 8px 0;
+  color: #555;
+}
+
+.card a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.card a:hover {
+  text-decoration: underline;
 }
 
 .read-the-docs {
