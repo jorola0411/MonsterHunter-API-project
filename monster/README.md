@@ -10,7 +10,8 @@ This project focused on quering an API in a 3 page React.js application. Some of
 Node modules are removed and not available on Github to reduce file size and to unzip the entire project faster.
 
 1. Open the Terminal on the Navigation bar on the top, or Ctrl + ` to open the terminal.
-2. In the terminal, input "cd monster" to change directories to the folder that contains all the files and sub-folders.
+2. In the terminal, input "cd MonsterHunter-API-Project" to change directories to the folder that contains all the files and sub-folders.
+2. In the terminal, input "cd monster" to change directories again.
 3. In the terminal, input "npm install" **NOTE** you must have node.js installed in your personal computer first for this to work.
 4. In the terminal, input "npm run dev" and click on the link to open the project.
 
